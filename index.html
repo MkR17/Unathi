@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Questionnaire</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #111111, #1b1b1b, #2a2118);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #1f2937;
+    }
+
+    .birthday-month {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      color: #d4a85f;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(22, 22, 22, 0.95);
+      border: 1px solid #3a2d1d;
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(244, 63, 94, 0.18);
+      overflow: hidden;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .header {
+      padding: 30px;
+      background: linear-gradient(90deg, #1f1f1f, #2a2118);
+      border-bottom: 1px solid #ffe4ec;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .label {
+      color: #d4a85f;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 10px 0 0;
+      font-size: 38px;
+      line-height: 1.05;
+      color: #f5f5f5;
+    }
+
+    .icon-box {
+      background: #2a2a2a;
+      border-radius: 20px;
+      padding: 14px;
+      font-size: 34px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .progress-wrap { margin-top: 28px; }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: bold;
+      color: #c7c7c7;
+      margin-bottom: 8px;
+    }
+
+    .progress-bg {
+      height: 12px;
+      background: #2a2a2a;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #d4a85f;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .countdown-box {
+      margin-top: 24px;
+      padding: 18px;
+      background: #2a2a2a;
+      border: 1px solid #3a2d1d;
+      border-radius: 22px;
+      box-shadow: 0 8px 22px rgba(244, 63, 94, 0.08);
+    }
+
+    .countdown-title {
+      color: #d4a85f;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .countdown-item {
+      background: #1f1f1f;
+      border-radius: 16px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .countdown-number {
+      display: block;
+      font-size: 24px;
+      font-weight: 900;
+      color: #f5f5f5;
+    }
+
+    .countdown-label {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #c7c7c7;
+      text-transform: uppercase;
+    }
+
+
+    .content { padding: 30px; }
+
+    .question-number {
+      color: #d4a85f;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 27px;
+      color: #f5f5f5;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: #e5e5e5;
+      font-size: 16px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .option {
+      border: 1px solid #3a2d1d;
+      background: #1f1f1f;
+      border-radius: 22px;
+      padding: 22px;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .option:hover {
+      background: #2c2418;
+      border-color: #d4a85f;
+      transform: translateY(-2px);
+    }
+
+    .emoji {
+      font-size: 34px;
+      margin-bottom: 12px;
+    }
+
+    .option-label {
+      font-size: 16px;
+      font-weight: bold;
+      color: #f5f5f5;
+    }
+
+    .result-title { text-align: center; }
+
+    .gift-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: #2c2418;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+    }
+
+    .plan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .plan-item {
+      color: #f5f5f5;
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      background: #1f1f1f;
+      border: 1px solid #3a2d1d;
+      border-radius: 20px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .number {
+      min-width: 30px;
+      height: 30px;
+      background: #2a2a2a;
+      color: #d4a85f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .final-box {
+      margin-top: 24px;
+      padding: 20px;
+      background: #0f0f0f;
+      color: #f8f1e4;
+      border-radius: 22px;
+    }
+
+    .final-box strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .restart {
+      margin-top: 22px;
+      width: 100%;
+      border: none;
+      background: #d4a85f;
+      color: #f8f1e4;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .restart:hover { background: #b78d49; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .birthday-month { display: none; }
+      h1 { font-size: 30px; }
+      .options { grid-template-columns: 1fr; }
+      .header, .content { padding: 22px; }
+      .countdown-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  
+    .luxury-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      z-index: -1;
+    }
+
+    .glow-one {
+      width: 280px;
+      height: 280px;
+      background: #d4a85f;
+      top: -80px;
+      right: -60px;
+    }
+
+    .glow-two {
+      width: 240px;
+      height: 240px;
+      background: #8b6b3f;
+      bottom: -60px;
+      left: -40px;
+    }
+
+    .floating-stars {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      color: #d4a85f;
+      font-size: 18px;
+      opacity: 0.7;
+      letter-spacing: 10px;
+    }
+
+    .luxury-divider {
+      margin-top: 18px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #d4a85f, transparent);
+      opacity: 0.5;
+    }
+
+
+    .plan-item div:last-child {
+      color: #f5f5f5;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+</style>
+</head>
+
+<body>
+
+  <div class="luxury-glow glow-one"></div>
+  <div class="luxury-glow glow-two"></div>
+  <div class="floating-stars">✦ ✧ ✦</div>
+
+  <div class="birthday-month">❤️ Birthday Month</div>
+
+  <div class="card">
+    <div class="header">
+      <div class="top-row">
+        <div>
+          <div class="label">✨ Birthday Questionnaire</div>
+          <h1>Unathi My Love, Choose Your Birthday Adventure 🖤</h1>
+<div class='luxury-divider'></div>
+        </div>
+        <div class="icon-box">🎉</div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-text">
+          <span>Progress</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress-bg">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="countdown-box">
+        <div class="countdown-title">⏳ Countdown to Unathi's Birthday — 26 May 2026</div>
+        <div class="countdown-grid">
+          <div class="countdown-item"><span class="countdown-number" id="days">0</span><span class="countdown-label">Days</span></div>
+          <div class="countdown-item"><span class="countdown-number" id="hours">0</span><span class="countdown-label">Hours</span></div>
+          <div class="countdown-item"><span class="countdown-number" id="minutes">0</span><span class="countdown-label">Minutes</span></div>
+          <div class="countdown-item"><span class="countdown-number" id="seconds">0</span><span class="countdown-label">Seconds</span></div>
+        </div>
+      
+      
+
+    </div>
+
+    <div class="content" id="app"></div>
+  </div>
+
+  <script>
+    const birthdayDate = new Date("2026-05-26T00:00:00+02:00");
+
+    const questions = {
+      vibe: {
+        key: "vibe",
+        title: "First things first... what birthday vibe are you feeling?",
+        subtitle: "Choose wisely, Unathi 😌",
+        options: [
+          { label: "I want to be alone", emoji: "🛋️", value: "alone" },
+          { label: "Usual Dinner date", emoji: "🍝", value: "dinner" },
+          { label: "Adventure", emoji: "✨", value: "adventure" },
+          { label: "Get some creative juices going", emoji: "🌿", value: "creative" }
+        ]
+      },
+      dinnerType: {
+        key: "dinnerType",
+        title: "What kind of dinner date are we talking?",
+        subtitle: "Choose the food direction for the birthday date.",
+        options: [
+          { label: "Fancy dining", emoji: "🥂", value: "fancyDining" },
+          { label: "Nice chill place with a vibe", emoji: "🍹", value: "chillVibe" }
+        ]
+      },
+      adventureType: {
+        key: "adventureType",
+        title: "Pick your adventure type",
+        subtitle: "No food direction here, just birthday exploring energy.",
+        options: [
+          { label: "Outdoor picnic or park date", emoji: "🧺", value: "picnic" },
+          { label: "Mini road trip", emoji: "🚗", value: "roadTrip" },
+          { label: "Camping getaway", emoji: "🏕️", value: "camping" },
+          { label: "Hiking adventure", emoji: "🥾", value: "hiking" }
+        ]
+      },
+      energy: {
+        key: "energy",
+        title: "How much effort do you want to use that day?",
+        subtitle: "No pressure. Birthday energy must be protected.",
+        options: [
+          { label: "Almost none", emoji: "😴", value: "low" },
+          { label: "A little bit", emoji: "🙂", value: "medium" },
+          { label: "I’m ready for plans", emoji: "😎", value: "high" }
+        ]
+      },
+      surprise: {
+        key: "surprise",
+        title: "How much surprise are you okay with?",
+        subtitle: "Be honest, I am plotting lovingly.",
+        options: [
+          { label: "Tell me everything", emoji: "👀", value: "none" },
+          { label: "Small surprise", emoji: "🎁", value: "small" },
+          { label: "Full mystery", emoji: "🕵️", value: "full" }
+        ]
+      },
+      loveLanguage: {
+        key: "loveLanguage",
+        title: "Choose your birthday love language",
+        subtitle: "This is for science. And spoiling you.",
+        options: [
+          { label: "Quality time", emoji: "🤍", value: "time" },
+          { label: "Food", emoji: "🍽️", value: "food" },
+          { label: "Gifts", emoji: "🎁", value: "gifts" },
+          { label: "Cute words", emoji: "💌", value: "words" }
+        ]
+      }
+    };
+
+    let flow = ["vibe"];
+    let step = 0;
+    let answers = {};
+
+    const app = document.getElementById("app");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+
+    function updateCountdown() {
+      const now = new Date();
+      const difference = birthdayDate - now;
+
+      const ids = ["days", "hours", "minutes", "seconds"];
+      const elements = ids.map(id => document.getElementById(id));
+
+      if (difference <= 0) {
+        elements.forEach(el => el.textContent = "0");
+        return;
+      }
+
+      elements[0].textContent = Math.floor(difference / (1000 * 60 * 60 * 24));
+      elements[1].textContent = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      elements[2].textContent = Math.floor((difference / (1000 * 60)) % 60);
+      elements[3].textContent = Math.floor((difference / 1000) % 60);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    function setFlowAfterVibe(vibe) {
+      if (vibe === "alone") {
+        flow = ["vibe"];
+      } else if (vibe === "dinner") {
+        flow = ["vibe", "dinnerType", "energy", "surprise", "loveLanguage"];
+      } else if (vibe === "adventure") {
+        flow = ["vibe", "adventureType", "energy", "surprise", "loveLanguage"];
+      } else if (vibe === "creative") {
+        flow = ["vibe", "energy", "surprise", "loveLanguage"];
+      }
+    }
+
+    function updateProgress(showResult = false) {
+      const total = flow.length;
+      const progress = Math.round(((step + (showResult ? 1 : 0)) / total) * 100);
+      progressBar.style.width = Math.min(progress, 100) + "%";
+      progressText.textContent = Math.min(progress, 100) + "%";
+    }
+
+    function renderQuestion() {
+      updateProgress(false);
+      const questionKey = flow[step];
+      const question = questions[questionKey];
+
+      app.innerHTML = `
+        <div class="question-number">Question ${step + 1} of ${flow.length}</div>
+        <h2>${question.title}</h2>
+        <p class="subtitle">${question.subtitle}</p>
+        <div class="options">
+          ${question.options.map((option, index) => `
+            <button class="option" onclick="selectOption(${index})">
+              <div class="emoji">${option.emoji}</div>
+              <div class="option-label">${option.label}</div>
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function selectOption(index) {
+      const questionKey = flow[step];
+      const question = questions[questionKey];
+      const selected = question.options[index];
+
+      answers[question.key] = selected.value;
+
+      if (question.key === "vibe") {
+        setFlowAfterVibe(selected.value);
+        if (selected.value === "alone") {
+          renderResult();
+          return;
+        }
+      }
+
+      if (step === flow.length - 1) {
+        renderResult();
+      } else {
+        step++;
+        renderQuestion();
+      }
+    }
+
+    function getPlan() {
+      const plan = [];
+      let title = "Your Birthday Plan Has Been Approved 💖";
+
+      if (answers.vibe === "alone") {
+        title = "Your Birthday Space Has Been Approved 🤍";
+        plan.push("Your girl truly understands and is happy to give you the space you need, celebrating you from a distance.");
+        plan.push("No pressure, no forced plans, just love and respect for your birthday mood.");
+        return { title, plan };
+      }
+
+      if (answers.vibe === "dinner") {
+        plan.push("Birthday vibe: Usual dinner date, but still cute because it is your birthday.");
+        if (answers.dinnerType === "fancyDining") {
+          plan.push("Food direction: fancy dining, dress-up energy, nice pictures, and a soft life moment.");
+        } else {
+          plan.push("Food direction: a nice chill place with a vibe, good food, good music, and relaxed birthday energy.");
+        }
+      }
+
+      if (answers.vibe === "adventure") {
+        plan.push("Birthday vibe: Adventure day with something fun to do and memories to make.");
+        const adventureMap = {
+          picnic: "Adventure type: outdoor picnic or park date with a relaxed, cute setup.",
+          roadTrip: "Adventure type: mini road trip with music, views, and spontaneous stops.",
+          camping: "Adventure type: camping getaway with cozy nights, nature, and quality time.",
+          hiking: "Adventure type: hiking adventure with fresh air, views, and exploring together."
+        };
+        plan.push(adventureMap[answers.adventureType]);
+      }
+
+      if (answers.vibe === "creative") {
+        plan.push("Birthday vibe: get the creative juices going.");
+        plan.push("Main activity: cooking class with the LOML, because cute memories and good food belong together.");
+      }
+
+      if (answers.energy === "low") {
+        plan.push("Energy level: easy and relaxed, with no unnecessary moving around.");
+      } else if (answers.energy === "medium") {
+        plan.push("Energy level: one main activity, then time to relax afterwards.");
+      } else {
+        plan.push("Energy level: proper birthday plans are allowed.");
+      }
+
+      if (answers.surprise === "none") {
+        plan.push("Surprise level: low. You get to know the plan because peace matters.");
+      } else if (answers.surprise === "small") {
+        plan.push("Surprise level: one cute secret detail will be added.");
+      } else {
+        plan.push("Surprise level: full mystery. Just show up cute and trust me.");
+      }
+
+      if (answers.loveLanguage === "time") {
+        plan.push("Main gift: proper quality time with no distractions.");
+      } else if (answers.loveLanguage === "food") {
+        plan.push("Main gift: something yummy, because food is clearly part of the love story.");
+      } else if (answers.loveLanguage === "gifts") {
+        plan.push("Main gift: a thoughtful present chosen with love.");
+      } else {
+        plan.push("Main gift: a sweet message/card, because birthday boy deserves soft words too.");
+      }
+
+      return { title, plan };
+    }
+
+    function renderResult() {
+      updateProgress(true);
+      const result = getPlan();
+
+      app.innerHTML = `
+        <div class="result-title">
+          <div class="gift-icon">🎁</div>
+          <h2>${result.title}</h2>
+          <p class="subtitle">Based on your very official birthday choices, here is the plan.</p>
+        </div>
+
+        <div class="plan-list">
+          ${result.plan.map((item, index) => `
+            <div class="plan-item">
+              <div class="number">${index + 1}</div>
+              <div>${item}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="final-box">
+          <strong>📅 Final Instruction</strong>
+          <p>Send these results to your girlfriend immediately so she can continue plotting your birthday happiness, Unathi 😌</p>
+        </div>
+
+        <button class="restart" onclick="restart()">↻ Try Again</button>
+      `;
+    }
+
+    function restart() {
+      flow = ["vibe"];
+      step = 0;
+      answers = {};
+      renderQuestion();
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
